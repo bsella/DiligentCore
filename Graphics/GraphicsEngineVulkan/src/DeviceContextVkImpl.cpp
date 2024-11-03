@@ -1341,6 +1341,21 @@ void DeviceContextVkImpl::ClearRenderTarget(ITextureView* pView, const void* RGB
     ++m_State.NumCommands;
 }
 
+void DeviceContextVkImpl::FillBuffer(IBufferView*                   pBufferView,
+                                     Uint32                         Value,
+                                     RESOURCE_STATE_TRANSITION_MODE StateTransitionMode)
+{
+    TDeviceContextBase::FillBuffer(pBufferView, Value, StateTransitionMode);
+
+    auto* pBuffVk = ClassPtrCast<BufferVkImpl>(pBufferView->GetBuffer());
+
+    TransitionOrVerifyBufferState(*pBuffVk, StateTransitionMode, RESOURCE_STATE_COPY_DEST, VK_ACCESS_TRANSFER_WRITE_BIT, "Filling buffer (DeviceContextVkImpl::FillBuffer)");
+
+    m_CommandBuffer.FillBuffer(pBuffVk->GetVkBuffer(), Value, pBufferView->GetDesc().ByteOffset, pBufferView->GetDesc().ByteWidth);
+
+    ++m_State.NumCommands;
+}
+
 void DeviceContextVkImpl::FinishFrame()
 {
 #ifdef DILIGENT_DEBUG

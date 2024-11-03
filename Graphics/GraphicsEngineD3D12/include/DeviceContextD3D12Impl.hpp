@@ -165,6 +165,11 @@ public:
                                                       const void*                    RGBA,
                                                       RESOURCE_STATE_TRANSITION_MODE StateTransitionMode) override final;
 
+    /// Implementation of IDeviceContext::FillBuffer() in Direct3D12 backend.
+    virtual void DILIGENT_CALL_TYPE FillBuffer(IBufferView*                   pBufferView,
+                                               Uint32                         Value,
+                                               RESOURCE_STATE_TRANSITION_MODE StateTransitionMode) override final;
+
     /// Implementation of IDeviceContext::UpdateBuffer() in Direct3D12 backend.
     virtual void DILIGENT_CALL_TYPE UpdateBuffer(IBuffer*                       pBuffer,
                                                  Uint64                         Offset,

@@ -214,6 +214,15 @@ BufferGLImpl::~BufferGLImpl()
 
 IMPLEMENT_QUERY_INTERFACE(BufferGLImpl, IID_BufferGL, TBufferBase)
 
+void BufferGLImpl::ClearData(GLContextState& CtxState, Uint64 Offset, Uint64 Size, Uint32 Value)
+{
+    const auto ResetVAO = m_BindTarget == GL_ARRAY_BUFFER || m_BindTarget == GL_ELEMENT_ARRAY_BUFFER;
+    CtxState.BindBuffer(m_BindTarget, m_GlBuffer, ResetVAO);
+    glClearBufferSubData(m_BindTarget, GL_R32UI, Offset, Size, GL_RED_INTEGER, GL_UNSIGNED_INT, &Value);
+    DEV_CHECK_GL_ERROR("glClearBufferSubData() failed");
+    CtxState.BindBuffer(m_BindTarget, GLObjectWrappers::GLBufferObj::Null(), ResetVAO);
+}
+
 void BufferGLImpl::UpdateData(GLContextState& CtxState, Uint64 Offset, Uint64 Size, const void* pData)
 {
     BufferMemoryBarrier(

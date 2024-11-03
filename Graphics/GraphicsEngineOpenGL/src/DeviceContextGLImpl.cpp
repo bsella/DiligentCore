@@ -1670,6 +1670,25 @@ void DeviceContextGLImpl::PurgeCurrentGLContextCaches()
         m_pDevice->PurgeContextCaches(NativeGLContext);
 }
 
+void DeviceContextGLImpl::FillBuffer(IBufferView*                   pBufferView,
+                                     Uint32                         Value,
+                                     RESOURCE_STATE_TRANSITION_MODE StateTransitionMode)
+{
+    TDeviceContextBase::FillBuffer(pBufferView, Value, StateTransitionMode);
+
+    const auto* pBufferViewGL = ClassPtrCast<BufferViewGLImpl>(pBufferView);
+    const auto* pBufferGL     = ClassPtrCast<BufferGLImpl>(pBufferViewGL->GetBuffer());
+
+    const auto& BindTarget = pBufferGL->m_BindTarget;
+
+    const auto ResetVAO = BindTarget == GL_ARRAY_BUFFER || BindTarget == GL_ELEMENT_ARRAY_BUFFER;
+
+    m_ContextState.BindBuffer(BindTarget, pBufferGL->GetGLHandle(), ResetVAO);
+    glClearBufferSubData(BindTarget, GL_R32UI, pBufferViewGL->GetDesc().ByteOffset, pBufferViewGL->GetDesc().ByteWidth, GL_RED_INTEGER, GL_UNSIGNED_INT, &Value);
+    DEV_CHECK_GL_ERROR("glClearBufferSubData() failed");
+    m_ContextState.BindBuffer(BindTarget, GLObjectWrappers::GLBufferObj::Null(), ResetVAO);
+}
+
 void DeviceContextGLImpl::UpdateBuffer(IBuffer*                       pBuffer,
                                        Uint64                         Offset,
                                        Uint64                         Size,

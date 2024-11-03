@@ -967,6 +967,17 @@ void DeviceContextD3D11Impl::Flush()
     m_pd3d11DeviceContext->Flush();
 }
 
+void DeviceContextD3D11Impl::FillBuffer(IBufferView*                   pBufferView,
+                                        Uint32                         Value,
+                                        RESOURCE_STATE_TRANSITION_MODE StateTransitionMode)
+{
+    TDeviceContextBase::FillBuffer(pBufferView, Value, StateTransitionMode);
+
+    auto* pBufferViewD3D11Impl = ClassPtrCast<BufferViewD3D11Impl>(pBufferView);
+
+    m_pd3d11DeviceContext->ClearUnorderedAccessViewUint(static_cast<ID3D11UnorderedAccessView*>(pBufferViewD3D11Impl->GetD3D11View()), &Value);
+}
+
 void DeviceContextD3D11Impl::UpdateBuffer(IBuffer*                       pBuffer,
                                           Uint64                         Offset,
                                           Uint64                         Size,

@@ -157,6 +157,11 @@ public:
                                                       const void*                    RGBA,
                                                       RESOURCE_STATE_TRANSITION_MODE StateTransitionMode) override final;
 
+    /// Implementation of IDeviceContext::FillBuffer() in OpenGL backend.
+    virtual void DILIGENT_CALL_TYPE FillBuffer(IBufferView*                   pBufferView,
+                                               Uint32                         Value,
+                                               RESOURCE_STATE_TRANSITION_MODE StateTransitionMode) override final;
+
     /// Implementation of IDeviceContext::UpdateBuffer() in OpenGL backend.
     virtual void DILIGENT_CALL_TYPE UpdateBuffer(IBuffer*                       pBuffer,
                                                  Uint64                         Offset,

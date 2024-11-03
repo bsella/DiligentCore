@@ -1637,6 +1637,21 @@ D3D12DynamicAllocation DeviceContextD3D12Impl::AllocateDynamicSpace(Uint64 NumBy
     return m_DynamicHeap.Allocate(NumBytes, Alignment, GetFrameNumber());
 }
 
+void DeviceContextD3D12Impl::FillBuffer(IBufferView*                   pBufferView,
+                                        Uint32                         Value,
+                                        RESOURCE_STATE_TRANSITION_MODE StateTransitionMode)
+{
+    TDeviceContextBase::FillBuffer(pBufferView, Value, StateTransitionMode);
+
+    auto* pBufferViewD3D12Impl = ClassPtrCast<BufferViewD3D12Impl>(pBufferView);
+
+    auto& CmdCtx = GetCmdContext();
+    CmdCtx.FlushResourceBarriers();
+    // TODO
+    //CmdCtx.GetCommandList()->ClearUnorderedAccessViewUint(, pBufferViewD3D12Impl->GetCPUDescriptorHandle(), , &Value, 0, nullptr);
+    ++m_State.NumCommands;
+}
+
 void DeviceContextD3D12Impl::UpdateBufferRegion(BufferD3D12Impl*               pBuffD3D12,
                                                 D3D12DynamicAllocation&        Allocation,
                                                 Uint64                         DstOffset,

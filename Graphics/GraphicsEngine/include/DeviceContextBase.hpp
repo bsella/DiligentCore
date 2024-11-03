@@ -219,6 +219,11 @@ public:
 
     virtual void DILIGENT_CALL_TYPE EndRenderPass() override = 0;
 
+    /// Base implementation of IDeviceContext::FillBuffer(); validates input parameters.
+    virtual void DILIGENT_CALL_TYPE FillBuffer(IBufferView*                   pBufferView,
+                                               Uint32                         Value,
+                                               RESOURCE_STATE_TRANSITION_MODE StateTransitionMode) override = 0;
+
     /// Base implementation of IDeviceContext::UpdateBuffer(); validates input parameters.
     virtual void DILIGENT_CALL_TYPE UpdateBuffer(IBuffer*                       pBuffer,
                                                  Uint64                         Offset,
@@ -1624,6 +1629,17 @@ inline void DeviceContextBase<ImplementationTraits>::ClearRenderTarget(ITextureV
 #endif
 
     ++m_Stats.CommandCounters.ClearRenderTarget;
+}
+
+template <typename ImplementationTraits>
+inline void DeviceContextBase<ImplementationTraits>::FillBuffer(
+    IBufferView*                   pBufferView,
+    Uint32                         Value,
+    RESOURCE_STATE_TRANSITION_MODE StateTransitionMode)
+{
+    DEV_CHECK_ERR(pBufferView != nullptr, "Buffer view to fill must not be null");
+
+    ++m_Stats.CommandCounters.FillBuffer;
 }
 
 template <typename ImplementationTraits>

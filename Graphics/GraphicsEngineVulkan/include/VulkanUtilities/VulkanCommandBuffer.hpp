@@ -461,6 +461,21 @@ public:
         vkCmdCopyBuffer(m_VkCmdBuffer, srcBuffer, dstBuffer, regionCount, pRegions);
     }
 
+    __forceinline void FillBuffer(VkBuffer            Buffer,
+                                  uint32_t            Data,
+                                  VkDeviceSize        Offset,
+                                  VkDeviceSize        Size)
+    {
+        VERIFY_EXPR(m_VkCmdBuffer != VK_NULL_HANDLE);
+        if (m_State.RenderPass != VK_NULL_HANDLE)
+        {
+            // Fill buffer operation must be performed outside of render pass.
+            EndRenderPass();
+        }
+        FlushBarriers();
+        vkCmdFillBuffer(m_VkCmdBuffer, Buffer, Offset, Size, Data);
+    }
+
     __forceinline void CopyImage(VkImage            srcImage,
                                  VkImageLayout      srcImageLayout,
                                  VkImage            dstImage,

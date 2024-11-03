@@ -2250,6 +2250,9 @@ struct DeviceContextCommandCounters
     /// The total number of ClearRenderTarget calls.
     Uint32 ClearRenderTarget DEFAULT_INITIALIZER(0);
 
+    /// The total number of FillBuffer calls.
+    Uint32 FillBuffer DEFAULT_INITIALIZER(0);
+
     /// The total number of ClearDepthStencil calls.
     Uint32 ClearDepthStencil DEFAULT_INITIALIZER(0);
 
@@ -2978,7 +2981,6 @@ DILIGENT_BEGIN_INTERFACE(IDeviceContext, IObject)
                                            const void*                    RGBA,
                                            RESOURCE_STATE_TRANSITION_MODE StateTransitionMode) PURE;
 
-
     /// Finishes recording commands and generates a command list.
 
     /// \param [out] ppCommandList - Memory location where pointer to the recorded command list will be written.
@@ -3104,6 +3106,16 @@ DILIGENT_BEGIN_INTERFACE(IDeviceContext, IObject)
     ///             bindings. An application must explicitly reset the PSO and bind all required shader
     ///             resources after flushing the context.
     VIRTUAL void METHOD(Flush)(THIS) PURE;
+
+
+    /// Fills a buffer view with the provided value.
+
+    /// \param [in] pBufferView - A pointer to the buffer view that will be filled.
+    /// \param [in] Value       - Value that will fill the buffer view.
+    VIRTUAL void METHOD(FillBuffer)(THIS_
+                                    IBufferView*                   pBufferView,
+                                    Uint32                         Value,
+                                    RESOURCE_STATE_TRANSITION_MODE StateTransitionMode) PURE;
 
 
     /// Updates the data in the buffer.
